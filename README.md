@@ -1,29 +1,60 @@
-local button = script.Parent
-local isRunning = false  -- Biến để theo dõi trạng thái
-local connection  -- Biến lưu trữ vòng lặp để có thể dừng
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Girl RNG API</title>
+    <style>
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Anime Girl RNG API</h1>
+    <button id="toggleButton">Start</button>
 
--- Hàm bật/tắt hành động khi nhấn nút
-local function toggleAction()
-    if not isRunning then
-        -- Nếu không chạy, bắt đầu vòng lặp
-        isRunning = true
-        button.Text = "Đang chạy..."
-        
-        -- Tạo vòng lặp gửi yêu cầu
-        connection = game:GetService("RunService").Stepped:Connect(function()
-            game:GetService("ReplicatedStorage").CORE_RemoteEvents.SendSummonRequest:FireServer(5)
-        end)
-    else
-        -- Nếu đang chạy, dừng vòng lặp
-        isRunning = false
-        button.Text = "Bắt đầu"
-        
-        -- Ngắt kết nối vòng lặp
-        if connection then
-            connection:Disconnect()
-        end
-    end
-end
+    <script>
+        let running = false;
+        let interval;
 
--- Kết nối sự kiện nhấn nút với hàm toggleAction
-button.MouseButton1Click:Connect(toggleAction)
+        // Hàm mô phỏng gọi API
+        const sendSummonRequest = async () => {
+            console.log("SendSummonRequest fired with value 5");
+            // Ở đây bạn có thể thêm logic gọi API thực sự trong game Anime Girl RNG
+        };
+
+        // Hàm mô phỏng chờ đợi tương tự như wait()
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Hàm để bắt đầu việc gửi yêu cầu theo chu kỳ
+        const startSummoning = async () => {
+            while (running) {
+                await sendSummonRequest();
+                await wait(1000); // Chờ 1 giây trước khi gửi tiếp
+            }
+        };
+
+        // Xử lý khi nhấn nút
+        document.getElementById('toggleButton').addEventListener('click', () => {
+            if (running) {
+                running = false;
+                clearInterval(interval);
+                document.getElementById('toggleButton').textContent = 'Start';
+                console.log("Stopped");
+            } else {
+                running = true;
+                document.getElementById('toggleButton').textContent = 'Stop';
+                startSummoning();
+                console.log("Started");
+            }
+        });
+    </script>
+</body>
+</html>
